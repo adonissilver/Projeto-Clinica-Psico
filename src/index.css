@@ -1,0 +1,70 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,500;1,400&family=Inter:wght@300;400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Cormorant Garamond", serif;
+  --font-heading: "Inter", sans-serif;
+
+  --color-primary: #00355f; /* Santa Casa Navy */
+  --color-primary-container: #00aeb5; /* Santa Casa Teal/Green */
+  --color-on-primary-container: #ffffff;
+  
+  --color-secondary: #00aeb5;
+  --color-secondary-container: #e5f7f8; /* Very light teal */
+  
+  --color-background: #f8fafc;
+  --color-surface: #ffffff;
+  --color-on-surface: #00355f;
+  --color-surface-container: #f1f5f9;
+  --color-surface-container-low: #f8fafc;
+  --color-surface-container-lowest: #ffffff;
+  
+  --color-outline: #00355f;
+  --color-outline-variant: #cbd5e1;
+  
+  --color-error: #e11d48;
+  --color-error-container: #fff1f2;
+  
+  --radius-sm: 0.375rem;
+  --radius-default: 0.75rem;
+  --radius-md: 1rem;
+  --radius-lg: 1.5rem;
+  --radius-xl: 2rem;
+
+  --animate-fade-in: fade-in 0.4s ease-out;
+  @keyframes fade-in {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+}
+
+@utility glass-card {
+  @apply bg-white/40 backdrop-blur-md border border-white/20 shadow-[0_10px_30px_rgba(90,90,64,0.05)];
+}
+
+@utility clinical-gradient {
+  background: radial-gradient(circle at top left, var(--color-background) 0%, var(--color-secondary-container) 100%);
+}
+
+@utility sidebar-link {
+  @apply flex items-center gap-3 px-6 py-3 text-primary/60 hover:bg-primary/5 transition-all duration-300 rounded-2xl mx-2;
+}
+
+@utility sidebar-link-active {
+  @apply sidebar-link bg-primary/10 text-primary font-semibold border-r-0 rounded-2xl;
+}
+
+@utility serif {
+  @apply font-serif;
+}
+
+@layer base {
+  body {
+    @apply bg-background text-on-surface font-sans;
+  }
+  
+  h1, h2, h3, .serif-heading {
+    @apply font-serif font-light tracking-tight;
+  }
+}
