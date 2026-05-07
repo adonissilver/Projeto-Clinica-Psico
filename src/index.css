@@ -6,18 +6,18 @@
   --font-serif: "Cormorant Garamond", serif;
   --font-heading: "Inter", sans-serif;
 
-  --color-primary: #00355f; /* Santa Casa Navy */
-  --color-primary-container: #00aeb5; /* Santa Casa Teal/Green */
+  --color-primary: #004a8e; /* Santa Casa Royal Blue */
+  --color-primary-container: #00a651; /* Santa Casa Emerald Green */
   --color-on-primary-container: #ffffff;
   
-  --color-secondary: #00aeb5;
-  --color-secondary-container: #e5f7f8; /* Very light teal */
+  --color-secondary: #8dc63f; /* Santa Casa Light Green */
+  --color-secondary-container: #f0fdf4; /* Very light green */
   
-  --color-background: #f8fafc;
+  --color-background: #ffffff;
   --color-surface: #ffffff;
-  --color-on-surface: #00355f;
-  --color-surface-container: #f1f5f9;
-  --color-surface-container-low: #f8fafc;
+  --color-on-surface: #002d56;
+  --color-surface-container: #f8fafc;
+  --color-surface-container-low: #f1f5f9;
   --color-surface-container-lowest: #ffffff;
   
   --color-outline: #00355f;

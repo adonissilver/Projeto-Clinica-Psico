@@ -32,13 +32,29 @@ type TabType = 'Gestão' | 'Clínico' | 'Controle';
 export default function PsychologistTechnicalDashboard() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = React.useState<TabType>('Gestão');
-  const [selectedPatientId, setSelectedPatientId] = React.useState<string | null>('1');
+  const [selectedPatientId, setSelectedPatientId] = React.useState<string | null>('101');
+  const [patientSearch, setPatientSearch] = React.useState('');
 
   // Mock data for Gestão
   const waitingPatients = [
-    { id: '101', name: 'Alvaro Juarez', type: 'Ansiedade', priority: 'Alta', age: 24 },
-    { id: '102', name: 'Beatriz Costa', type: 'Autismo', priority: 'Média', age: 8 },
-    { id: '103', name: 'Carlos Santos', type: 'Depressão', priority: 'Baixa', age: 45 }
+    { id: '101', name: 'Alvaro Juarez', type: 'Ansiedade', priority: 'Alta', age: 24, gender: 'Masculino' },
+    { id: '102', name: 'Beatriz Costa', type: 'Autismo', priority: 'Média', age: 8, gender: 'Feminino' },
+    { id: '103', name: 'Carlos Santos', type: 'Depressão', priority: 'Baixa', age: 45, gender: 'Masculino' },
+    { id: '104', name: 'Diana Lima', type: 'TDAH', priority: 'Média', age: 10, gender: 'Feminino' },
+    { id: '105', name: 'Eduardo Souto', type: 'Fobia Social', priority: 'Alta', age: 31, gender: 'Masculino' }
+  ];
+
+  const filteredPatients = waitingPatients.filter(p => 
+    p.name.toLowerCase().includes(patientSearch.toLowerCase()) ||
+    p.type.toLowerCase().includes(patientSearch.toLowerCase())
+  );
+
+  const selectedPatient = waitingPatients.find(p => p.id === selectedPatientId);
+
+  const studentGroups = [
+    { id: 'g1', name: 'Grupo A - Psicoterapia Adulto', supervisor: 'Psic. Técnico', students: 5, period: 'Manhã' },
+    { id: 'g2', name: 'Grupo B - Avaliação Infantil', supervisor: 'Psic. Técnico', students: 4, period: 'Tarde' },
+    { id: 'g3', name: 'Grupo C - Terapia de Casal', supervisor: 'Psic. Técnico', students: 6, period: 'Noite' },
   ];
 
   const scheduleSlots = [
@@ -142,29 +158,43 @@ export default function PsychologistTechnicalDashboard() {
               exit={{ opacity: 0, y: -10 }}
               className="grid grid-cols-1 lg:grid-cols-12 gap-6"
             >
-              {/* Left Panel: Queue */}
-              <div className="lg:col-span-3 space-y-4">
+              {/* Left Panel: Queue & Groups */}
+              <div className="lg:col-span-3 space-y-6">
                 <div className="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm">
                   <div className="flex justify-between items-center mb-4">
                     <h3 className="text-xs font-black uppercase tracking-widest text-slate-400">Fila de Espera</h3>
-                    <Filter size={16} className="text-slate-400" />
+                    <div className="flex items-center gap-2">
+                      <span className="bg-primary/10 text-primary text-[10px] font-black px-2 py-0.5 rounded-full">
+                        {filteredPatients.length}
+                      </span>
+                      <Filter size={16} className="text-slate-400" />
+                    </div>
                   </div>
                   <div className="relative mb-4">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-300" size={14} />
                     <input 
                       type="text" 
-                      placeholder="Filtrar..."
-                      className="w-full bg-slate-50 border border-slate-100 rounded-xl pl-9 pr-3 py-2 text-xs outline-none focus:border-primary/30"
+                      placeholder="Pesquisar paciente..."
+                      value={patientSearch}
+                      onChange={(e) => setPatientSearch(e.target.value)}
+                      className="w-full bg-slate-50 border border-slate-100 rounded-xl pl-9 pr-3 py-2.5 text-xs outline-none focus:border-primary/30 transition-all shadow-inner"
                     />
                   </div>
-                  <div className="space-y-2">
-                    {waitingPatients.map(p => (
+                  <div className="space-y-2 max-h-[300px] overflow-y-auto pr-1">
+                    {filteredPatients.map(p => (
                       <button 
                         key={p.id}
-                        className="w-full text-left p-3 rounded-2xl border border-slate-50 hover:border-primary/20 hover:bg-primary/5 transition-all group"
+                        onClick={() => setSelectedPatientId(p.id)}
+                        className={`w-full text-left p-3 rounded-2xl border transition-all group ${
+                          selectedPatientId === p.id 
+                            ? 'border-primary bg-primary/5 shadow-sm' 
+                            : 'border-slate-50 hover:border-primary/20 hover:bg-primary/5'
+                        }`}
                       >
                         <div className="flex justify-between items-start mb-1">
-                          <span className="font-bold text-xs text-slate-700">{p.name}</span>
+                          <span className={`font-bold text-xs ${selectedPatientId === p.id ? 'text-primary' : 'text-slate-700'}`}>
+                            {p.name}
+                          </span>
                           <span className={`text-[8px] font-black px-1.5 py-0.5 rounded-full ${
                             p.priority === 'Alta' ? 'bg-error/10 text-error' : 'bg-slate-100 text-slate-400'
                           }`}>
@@ -173,6 +203,44 @@ export default function PsychologistTechnicalDashboard() {
                         </div>
                         <p className="text-[10px] text-slate-400 font-medium">{p.type} • {p.age} anos</p>
                       </button>
+                    ))}
+                    {filteredPatients.length === 0 && (
+                      <div className="text-center py-8">
+                        <p className="text-[10px] font-bold text-slate-300 uppercase tracking-widest">Nenhum resultado</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Groups Section */}
+                <div className="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm">
+                  <div className="flex justify-between items-center mb-4">
+                    <h3 className="text-xs font-black uppercase tracking-widest text-slate-400">Grupos de Estudantes</h3>
+                    <LayoutGrid size={16} className="text-slate-200" />
+                  </div>
+                  <div className="space-y-3">
+                    {studentGroups.map(group => (
+                      <div key={group.id} className="p-3 bg-slate-50 rounded-2xl border border-slate-100 group hover:border-primary/20 transition-all cursor-pointer">
+                        <div className="flex justify-between items-start mb-2">
+                          <h4 className="text-[11px] font-black text-slate-700 uppercase tracking-tight leading-tight">{group.name}</h4>
+                          <span className="text-[8px] bg-white px-2 py-0.5 rounded-full border border-slate-100 text-slate-400 font-black">
+                            {group.period}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <div className="flex -space-x-2">
+                            {[1, 2, 3].map(i => (
+                              <div key={i} className="w-5 h-5 rounded-full bg-slate-200 border-2 border-slate-50 flex items-center justify-center text-[8px] font-bold text-slate-500 overflow-hidden">
+                                <User size={8} />
+                              </div>
+                            ))}
+                            <div className="w-5 h-5 rounded-full bg-primary/10 border-2 border-slate-50 flex items-center justify-center text-[8px] font-black text-primary">
+                              +{group.students - 3}
+                            </div>
+                          </div>
+                          <span className="text-[9px] font-bold text-slate-400">{group.students} Estagiários</span>
+                        </div>
+                      </div>
                     ))}
                   </div>
                 </div>
@@ -221,42 +289,67 @@ export default function PsychologistTechnicalDashboard() {
 
               {/* Right Panel: Details */}
               <div className="lg:col-span-3 space-y-4">
-                <div className="bg-white p-6 rounded-[32px] border border-slate-200 shadow-sm">
-                  <div className="flex items-center gap-4 mb-6">
-                    <div className="w-14 h-14 bg-secondary-container rounded-2xl flex items-center justify-center text-primary font-black text-xl">
-                      MS
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-slate-900">Maria Silva</h4>
-                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Ativo • ID: 452</p>
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-4 mb-8">
-                    <div className="flex justify-between items-center text-xs">
-                      <span className="text-slate-400">Idade</span>
-                      <span className="font-bold">42 anos</span>
-                    </div>
-                    <div className="flex justify-between items-center text-xs">
-                      <span className="text-slate-400">Faltas</span>
-                      <span className="font-bold text-error">2 (Mês)</span>
-                    </div>
-                    <div className="flex justify-between items-center text-xs">
-                      <span className="text-slate-400">Estagiário</span>
-                      <span className="font-bold">João P.</span>
-                    </div>
-                  </div>
+                <AnimatePresence mode="wait">
+                  {selectedPatient ? (
+                    <motion.div 
+                      key={selectedPatient.id}
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -20 }}
+                      className="bg-white p-6 rounded-[32px] border border-slate-200 shadow-sm"
+                    >
+                      <div className="flex items-center gap-4 mb-6">
+                        <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center text-primary font-black text-xl">
+                          {selectedPatient.name.split(' ').map(n => n[0]).join('')}
+                        </div>
+                        <div>
+                          <h4 className="font-bold text-slate-900">{selectedPatient.name}</h4>
+                          <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">ID: {selectedPatient.id}</p>
+                        </div>
+                      </div>
+                      
+                      <div className="space-y-4 mb-8">
+                        <div className="flex justify-between items-center text-xs">
+                          <span className="text-slate-400">Idade</span>
+                          <span className="font-bold">{selectedPatient.age} anos</span>
+                        </div>
+                        <div className="flex justify-between items-center text-xs">
+                          <span className="text-slate-400">Gênero</span>
+                          <span className="font-bold">{selectedPatient.gender}</span>
+                        </div>
+                        <div className="flex justify-between items-center text-xs">
+                          <span className="text-slate-400">Queixa Pr.</span>
+                          <span className="font-bold text-primary">{selectedPatient.type}</span>
+                        </div>
+                      </div>
 
-                  <div className="space-y-3">
-                    <button className="w-full bg-primary text-white py-4 rounded-2xl text-xs font-bold uppercase tracking-widest shadow-lg shadow-primary/20 hover:opacity-90 active:scale-95 transition-all">
-                      Alocar Paciente
-                    </button>
-                    <button className="w-full bg-white border border-slate-200 text-slate-600 py-4 rounded-2xl text-xs font-bold uppercase tracking-widest hover:bg-slate-50 transition-all">
-                      Substituir
-                    </button>
-                    <button className="w-full text-error text-[10px] font-black uppercase tracking-widest hover:bg-error/5 py-3 rounded-xl transition-all">
-                      Marcar Falta
-                    </button>
+                      <div className="space-y-3">
+                        <button className="w-full bg-primary text-white py-4 rounded-2xl text-xs font-bold uppercase tracking-widest shadow-lg shadow-primary/20 hover:opacity-90 active:scale-95 transition-all flex items-center justify-center gap-2">
+                          <Plus size={16} /> Alocar Paciente
+                        </button>
+                        <button className="w-full bg-white border border-slate-200 text-slate-600 py-4 rounded-2xl text-xs font-bold uppercase tracking-widest hover:bg-slate-50 transition-all flex items-center justify-center gap-2">
+                          <History size={16} /> Substituir
+                        </button>
+                        <button className="w-full text-error text-[10px] font-black uppercase tracking-widest hover:bg-error/5 py-3 rounded-xl transition-all flex items-center justify-center gap-2">
+                          <AlertCircle size={14} /> Marcar Falta
+                        </button>
+                      </div>
+                    </motion.div>
+                  ) : (
+                    <div className="bg-slate-50 p-8 rounded-[32px] border-2 border-dashed border-slate-200 flex flex-col items-center justify-center text-center opacity-50">
+                      <User size={32} className="text-slate-300 mb-2" />
+                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-relaxed">
+                        Selecione um paciente<br/>para realizar ações
+                      </p>
+                    </div>
+                  )}
+                </AnimatePresence>
+                
+                <div className="bg-primary/5 p-6 rounded-[32px] border border-primary/10">
+                  <h4 className="text-[10px] font-black text-primary uppercase tracking-widest mb-3">Status do Especialista</h4>
+                  <div className="flex items-center gap-3">
+                    <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                    <span className="text-xs font-bold text-slate-600">Disponível para Supervisão</span>
                   </div>
                 </div>
               </div>

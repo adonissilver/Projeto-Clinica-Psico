@@ -27,12 +27,13 @@ export default function ProjectCreditsView() {
           {/* Left Side: Image */}
           <div className="md:w-1/2 relative overflow-hidden h-64 md:h-auto">
             <img 
-              src="https://fcmscp.br/wp-content/uploads/2023/11/logo_fcmsantacasa.png" // Placeholder or descriptive if I can't find direct URL, I'll try a generic representative image
+              src="https://fcmsantacasasp.edu.br/wp-content/uploads/2021/04/santa-casa-de-sao-paulo-historia.jpg"
               className="absolute inset-0 w-full h-full object-cover"
-              alt="Santa Casa de São Paulo"
+              alt="Santa Casa de São Paulo - Fachada Histórica"
+              referrerPolicy="no-referrer"
               onError={(e) => {
                 const target = e.target as HTMLImageElement;
-                target.src = "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=800&h=1200&fit=crop";
+                target.src = "https://fcmsantacasasp.edu.br/wp-content/uploads/2021/05/Fachada_Portal_FCMSCSP.jpg";
               }}
             />
             <div className="absolute inset-0 bg-primary/10 mix-blend-multiply" />
