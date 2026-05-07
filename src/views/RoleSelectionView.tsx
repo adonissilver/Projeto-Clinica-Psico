@@ -44,8 +44,8 @@ export default function RoleSelectionView() {
     { 
       id: 'paciente', 
       title: 'Paciente', 
-      image: 'https://images.unsplash.com/photo-1581056316648-5c7423089fb2?w=800&h=800&fit=crop',
-      color: 'from-[#00a651]/80 to-[#00a651]/30',
+      image: 'https://images.pexels.com/photos/5979726/pexels-photo-5979726.jpeg', 
+      color: 'from-slate-900/60 to-transparent',
       desc: 'Portal do paciente e agendamentos pessoais.',
       target: '/portal' 
     },
@@ -98,6 +98,10 @@ export default function RoleSelectionView() {
                 className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
                 alt=""
                 referrerPolicy="no-referrer"
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  target.style.opacity = '0';
+                }}
               />
               
               {/* Gradient Overlay */}
